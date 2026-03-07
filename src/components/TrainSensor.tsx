@@ -1,7 +1,8 @@
 import { useState, useCallback } from "react";
 import { MetroLine, CAPACITY_PER_COACH } from "@/data/delhiMetro";
-import { ArrowLeft, RotateCcw, Users, DoorOpen, DoorClosed, AlertTriangle, Info, Armchair, Hand } from "lucide-react";
+import { ArrowLeft, RotateCcw, Users, DoorOpen, DoorClosed, AlertTriangle, Info, Armchair, Hand, Shuffle, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface Props {
   line: MetroLine;
@@ -9,14 +10,87 @@ interface Props {
   onBack: () => void;
 }
 
+interface Warning {
+  coachIndex: number;
+  rejected: number;
+  timestamp: number;
+}
+
 const TrainSensor = ({ line, stationName, onBack }: Props) => {
   const capacity = CAPACITY_PER_COACH[line.coaches];
   const coachCount = line.coaches;
   const [passengers, setPassengers] = useState<number[]>(Array(coachCount).fill(0));
+  const [warnings, setWarnings] = useState<Warning[]>([]);
+
+  const randomBoard = useCallback(() => {
+    // Random 5-15 people try to board across random coaches
+    const totalTrying = Math.floor(Math.random() * 11) + 5;
+    let rejected = 0;
+    const rejectedCoaches: number[] = [];
+
+    setPassengers((prev) => {
+      const next = [...prev];
+      for (let t = 0; t < totalTrying; t++) {
+        const coach = Math.floor(Math.random() * coachCount);
+        if (next[coach] < capacity) {
+          next[coach]++;
+        } else {
+          rejected++;
+          if (!rejectedCoaches.includes(coach)) rejectedCoaches.push(coach);
+        }
+      }
+      return next;
+    });
+
+    // Show warnings for rejected passengers
+    setTimeout(() => {
+      setPassengers((current) => {
+        // Recalculate rejected based on actual state
+        let actualRejected = 0;
+        const newWarnings: Warning[] = [];
+        const fullCoaches = current
+          .map((c, i) => (c >= capacity ? i : -1))
+          .filter((i) => i >= 0);
+
+        if (fullCoaches.length > 0) {
+          // Simulate extra people trying to board full coaches
+          const extraTrying = Math.floor(Math.random() * 5) + 1;
+          fullCoaches.forEach((ci) => {
+            const tryCount = Math.floor(Math.random() * extraTrying) + 1;
+            actualRejected += tryCount;
+            newWarnings.push({ coachIndex: ci, rejected: tryCount, timestamp: Date.now() });
+          });
+        }
+
+        if (actualRejected > 0 || rejected > 0) {
+          const totalRej = rejected + actualRejected;
+          toast.error(`⚠️ ${totalRej} passenger${totalRej > 1 ? "s" : ""} denied boarding — coach${rejectedCoaches.length > 1 ? "es" : ""} at capacity!`, {
+            description: `Coaches ${[...new Set([...rejectedCoaches, ...fullCoaches])].map((c) => String(c + 1).padStart(2, "0")).join(", ")} have doors locked.`,
+            duration: 4000,
+          });
+          setWarnings((w) => [...newWarnings, ...w].slice(0, 20));
+        } else {
+          toast.success(`✅ ${totalTrying} passengers boarded successfully`, { duration: 2000 });
+        }
+
+        return current;
+      });
+    }, 100);
+  }, [coachCount, capacity]);
 
   const addPassenger = useCallback(
     (i: number) => {
-      setPassengers((p) => p.map((v, idx) => (idx === i ? Math.min(v + 1, capacity) : v)));
+      setPassengers((p) => {
+        if (p[i] >= capacity) {
+          toast.error(`⚠️ Coach ${String(i + 1).padStart(2, "0")} is FULL — door locked!`, {
+            description: "Passengers must alight before new boarding is allowed.",
+            duration: 3000,
+          });
+          setWarnings((w) => [{ coachIndex: i, rejected: 1, timestamp: Date.now() }, ...w].slice(0, 20));
+          return p;
+        }
+        return p.map((v, idx) => (idx === i ? v + 1 : v));
+      });
     },
     [capacity]
   );
@@ -69,16 +143,38 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
         <p className="text-sm font-mono text-muted-foreground leading-relaxed">
           Capacity = <span className="text-foreground">seats + handlebar standing zones</span>.
           Doors <span className="text-danger font-semibold">lock automatically</span> when a coach reaches {capacity} passengers.
-          Passengers must alight to free space.
+          Use <span className="text-foreground font-semibold">Random Board</span> to simulate a crowd arriving at the platform.
         </p>
       </div>
 
-      {/* Reset */}
-      <div className="flex justify-end mb-4">
+      {/* Actions */}
+      <div className="flex items-center gap-3 mb-4">
+        <Button size="sm" onClick={randomBoard} className="font-mono text-xs">
+          <Shuffle className="w-3 h-3 mr-1" /> RANDOM BOARD (5-15 pax)
+        </Button>
         <Button size="sm" variant="outline" onClick={() => setPassengers(Array(coachCount).fill(0))} className="font-mono text-xs">
           <RotateCcw className="w-3 h-3 mr-1" /> RESET ALL
         </Button>
       </div>
+
+      {/* Warning log */}
+      {warnings.length > 0 && (
+        <div className="bg-danger/5 border border-danger/20 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <ShieldAlert className="w-4 h-4 text-danger" />
+            <span className="text-xs font-display font-bold tracking-wider text-danger">OVERCROWDING WARNINGS</span>
+          </div>
+          <div className="space-y-1 max-h-32 overflow-y-auto">
+            {warnings.slice(0, 8).map((w, i) => (
+              <div key={`${w.timestamp}-${i}`} className="text-xs font-mono text-muted-foreground flex items-center gap-2">
+                <span className="text-danger">●</span>
+                <span className="text-foreground/70">{new Date(w.timestamp).toLocaleTimeString()}</span>
+                Coach {String(w.coachIndex + 1).padStart(2, "0")}: {w.rejected} passenger{w.rejected > 1 ? "s" : ""} denied — door locked
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Coach grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -104,15 +200,12 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
                 <h3 className="font-display text-sm font-bold tracking-wider text-foreground">
                   COACH {String(i + 1).padStart(2, "0")}
                 </h3>
-                <div
-                  className={`flex items-center gap-1.5 text-xs font-mono font-semibold ${isFull ? "text-danger" : "text-success"}`}
-                >
+                <div className={`flex items-center gap-1.5 text-xs font-mono font-semibold ${isFull ? "text-danger" : "text-success"}`}>
                   {isFull ? <DoorClosed className="w-4 h-4" /> : <DoorOpen className="w-4 h-4" />}
                   {isFull ? "LOCKED" : "OPEN"}
                 </div>
               </div>
 
-              {/* Bar */}
               <div className="relative h-3 rounded-full bg-secondary overflow-hidden mb-3">
                 <div
                   className="absolute inset-y-0 left-0 rounded-full transition-all duration-700 ease-out"
@@ -147,7 +240,7 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
               </div>
 
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="flex-1 font-mono text-xs" onClick={() => addPassenger(i)} disabled={isFull}>
+                <Button size="sm" variant="outline" className="flex-1 font-mono text-xs" onClick={() => addPassenger(i)}>
                   + Board
                 </Button>
                 <Button size="sm" variant="outline" className="flex-1 font-mono text-xs" onClick={() => removePassenger(i)} disabled={count === 0}>
