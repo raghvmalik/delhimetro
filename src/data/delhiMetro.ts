@@ -63,6 +63,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "48 90% 50%",
     colorHex: "#f2c40f",
     coaches: 8,
+    rushLevel: 8,
+    rating: 4.1,
+    description: "The busiest and most iconic line — Samaypur Badli to HUDA City Centre. Backbone of Delhi Metro passing through Rajiv Chowk, the busiest station in India. Heavy rush during peak hours.",
     stations: [
       { name: "Samaypur Badli" },
       { name: "Rohini Sector 18-19" },
