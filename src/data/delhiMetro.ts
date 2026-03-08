@@ -271,6 +271,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "320 70% 50%",
     colorHex: "#cc2990",
     coaches: 8,
+    rushLevel: 6,
+    rating: 4.3,
+    description: "Modern driverless line from Botanical Garden to Janakpuri West. Features India's first unattended train operations. Connects Noida to South & West Delhi via Hauz Khas. Growing ridership.",
     stations: [
       { name: "Botanical Garden", interchange: ["blue"] },
       { name: "Okhla Bird Sanctuary" },
