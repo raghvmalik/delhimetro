@@ -352,6 +352,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "0 0% 50%",
     colorHex: "#808080",
     coaches: 6,
+    rushLevel: 2,
+    rating: 3.0,
+    description: "Shortest operational line with just 3 stations connecting Dwarka to Najafgarh. Low ridership feeder line. Serves the rural-urban fringe of South-West Delhi.",
     stations: [
       { name: "Dwarka" },
       { name: "Nangli" },
