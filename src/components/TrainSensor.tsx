@@ -22,9 +22,18 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
   const [passengers, setPassengers] = useState<number[]>(Array(coachCount).fill(0));
   const [warnings, setWarnings] = useState<Warning[]>([]);
 
+  // Check if current station is an interchange
+  const currentStation = line.stations.find((s) => s.name === stationName);
+  const isInterchange = currentStation?.interchange && currentStation.interchange.length > 0;
+  const interchangeMultiplier = isInterchange ? 1.5 + (currentStation!.interchange!.length * 0.3) : 1;
+
   const randomBoard = useCallback(() => {
-    // Random 5-15 people try to board across random coaches
-    const totalTrying = Math.floor(Math.random() * 11) + 5;
+    // Rush-level based boarding: rushLevel 1-10 maps to passenger ranges
+    const baseMin = Math.max(2, Math.floor(line.rushLevel * 1.5));
+    const baseMax = Math.floor(line.rushLevel * 4);
+    const min = Math.floor(baseMin * interchangeMultiplier);
+    const max = Math.floor(baseMax * interchangeMultiplier);
+    const totalTrying = Math.floor(Math.random() * (max - min + 1)) + min;
     let rejected = 0;
     const rejectedCoaches: number[] = [];
 
