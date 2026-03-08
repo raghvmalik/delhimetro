@@ -112,6 +112,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "215 80% 50%",
     colorHex: "#1a66cc",
     coaches: 8,
+    rushLevel: 9,
+    rating: 3.8,
+    description: "The longest and most crowded line — Dwarka Sector 21 to Noida Electronic City. Extremely high ridership with severe rush at Rajiv Chowk, Dwarka Mor, and Noida Sector 18. Known for overcrowding.",
     stations: [
       { name: "Dwarka Sector 21" },
       { name: "Dwarka Sector 8" },
