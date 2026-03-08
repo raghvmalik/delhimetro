@@ -22,9 +22,18 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
   const [passengers, setPassengers] = useState<number[]>(Array(coachCount).fill(0));
   const [warnings, setWarnings] = useState<Warning[]>([]);
 
+  // Check if current station is an interchange
+  const currentStation = line.stations.find((s) => s.name === stationName);
+  const isInterchange = currentStation?.interchange && currentStation.interchange.length > 0;
+  const interchangeMultiplier = isInterchange ? 1.5 + (currentStation!.interchange!.length * 0.3) : 1;
+
   const randomBoard = useCallback(() => {
-    // Random 5-15 people try to board across random coaches
-    const totalTrying = Math.floor(Math.random() * 11) + 5;
+    // Rush-level based boarding: rushLevel 1-10 maps to passenger ranges
+    const baseMin = Math.max(2, Math.floor(line.rushLevel * 1.5));
+    const baseMax = Math.floor(line.rushLevel * 4);
+    const min = Math.floor(baseMin * interchangeMultiplier);
+    const max = Math.floor(baseMax * interchangeMultiplier);
+    const totalTrying = Math.floor(Math.random() * (max - min + 1)) + min;
     let rejected = 0;
     const rejectedCoaches: number[] = [];
 
@@ -76,7 +85,7 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
         return current;
       });
     }, 100);
-  }, [coachCount, capacity]);
+  }, [coachCount, capacity, line.rushLevel, interchangeMultiplier]);
 
   const addPassenger = useCallback(
     (i: number) => {
@@ -116,7 +125,7 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
         />
         <div>
           <h2 className="font-display text-lg font-bold tracking-wider text-foreground">{stationName.toUpperCase()}</h2>
-          <p className="text-xs font-mono text-muted-foreground">{line.name} • Train Sensor</p>
+          <p className="text-xs font-mono text-muted-foreground">{line.name} • Train Sensor • Rush Level {line.rushLevel}/10{isInterchange ? " • ⬥ Interchange" : ""}</p>
         </div>
       </div>
 
@@ -150,7 +159,7 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
       {/* Actions */}
       <div className="flex items-center gap-3 mb-4">
         <Button size="sm" onClick={randomBoard} className="font-mono text-xs">
-          <Shuffle className="w-3 h-3 mr-1" /> RANDOM BOARD (5-15 pax)
+          <Shuffle className="w-3 h-3 mr-1" /> RANDOM BOARD ({Math.floor(line.rushLevel * 1.5 * interchangeMultiplier)}-{Math.floor(line.rushLevel * 4 * interchangeMultiplier)} pax)
         </Button>
         <Button size="sm" variant="outline" onClick={() => setPassengers(Array(coachCount).fill(0))} className="font-mono text-xs">
           <RotateCcw className="w-3 h-3 mr-1" /> RESET ALL

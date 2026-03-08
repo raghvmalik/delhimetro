@@ -10,6 +10,9 @@ export interface MetroLine {
   colorHex: string; // for direct use
   coaches: 6 | 8;
   stations: Station[];
+  rushLevel: number; // 1-10 scale, affects random boarding volume
+  rating: number; // 1-5 star rating
+  description: string; // line description
 }
 
 export const METRO_LINES: MetroLine[] = [
@@ -19,6 +22,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "0 70% 50%",
     colorHex: "#cc3333",
     coaches: 6,
+    rushLevel: 5,
+    rating: 3.2,
+    description: "One of the oldest lines connecting Rithala to Shaheed Sthal (New Bus Adda). Carries average ridership through residential and commercial areas of North & East Delhi.",
     stations: [
       { name: "Shaheed Sthal" },
       { name: "Hindon River" },
@@ -57,6 +63,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "48 90% 50%",
     colorHex: "#f2c40f",
     coaches: 8,
+    rushLevel: 8,
+    rating: 4.1,
+    description: "The busiest and most iconic line — Samaypur Badli to HUDA City Centre. Backbone of Delhi Metro passing through Rajiv Chowk, the busiest station in India. Heavy rush during peak hours.",
     stations: [
       { name: "Samaypur Badli" },
       { name: "Rohini Sector 18-19" },
@@ -103,6 +112,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "215 80% 50%",
     colorHex: "#1a66cc",
     coaches: 8,
+    rushLevel: 9,
+    rating: 3.8,
+    description: "The longest and most crowded line — Dwarka Sector 21 to Noida Electronic City. Extremely high ridership with severe rush at Rajiv Chowk, Dwarka Mor, and Noida Sector 18. Known for overcrowding.",
     stations: [
       { name: "Dwarka Sector 21" },
       { name: "Dwarka Sector 8" },
@@ -162,6 +174,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "140 65% 40%",
     colorHex: "#238c3e",
     coaches: 6,
+    rushLevel: 8,
+    rating: 3.5,
+    description: "Connects Kirti Nagar to Brigadier Hoshiyar Singh (Bahadurgarh). High ridership from industrial and residential areas of West Delhi. Gets very crowded during peak hours like the Blue Line.",
     stations: [
       { name: "Kirti Nagar", interchange: ["blue"] },
       { name: "Satguru Ram Singh Marg" },
@@ -193,6 +208,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "270 60% 50%",
     colorHex: "#8033cc",
     coaches: 8,
+    rushLevel: 7,
+    rating: 4.0,
+    description: "Kashmere Gate to Raja Nahar Singh (Ballabhgarh). Important corridor for South Delhi commuters. Moderately crowded with good interchange connectivity at Kashmere Gate and Central Secretariat.",
     stations: [
       { name: "Kashmere Gate", interchange: ["red", "yellow"] },
       { name: "Lal Quila" },
@@ -235,6 +253,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "25 85% 55%",
     colorHex: "#e87820",
     coaches: 6,
+    rushLevel: 2,
+    rating: 4.6,
+    description: "Premium express service from New Delhi to Dwarka Sector 21 via IGI Airport. Low ridership but highest comfort — cushioned seats, baggage racks, and airport check-in facilities. India's fastest metro.",
     stations: [
       { name: "New Delhi", interchange: ["yellow"] },
       { name: "Shivaji Stadium" },
@@ -250,6 +271,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "320 70% 50%",
     colorHex: "#cc2990",
     coaches: 8,
+    rushLevel: 6,
+    rating: 4.3,
+    description: "Modern driverless line from Botanical Garden to Janakpuri West. Features India's first unattended train operations. Connects Noida to South & West Delhi via Hauz Khas. Growing ridership.",
     stations: [
       { name: "Botanical Garden", interchange: ["blue"] },
       { name: "Okhla Bird Sanctuary" },
@@ -278,6 +302,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "340 70% 60%",
     colorHex: "#d94080",
     coaches: 8,
+    rushLevel: 3,
+    rating: 4.2,
+    description: "Longest ring line from Majlis Park to Shiv Vihar. Despite many stations, carries relatively low passenger load. Well-connected with interchanges but yet to reach full ridership potential.",
     stations: [
       { name: "Majlis Park" },
       { name: "Azadpur", interchange: ["yellow"] },
@@ -325,6 +352,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "0 0% 50%",
     colorHex: "#808080",
     coaches: 6,
+    rushLevel: 2,
+    rating: 3.0,
+    description: "Shortest operational line with just 3 stations connecting Dwarka to Najafgarh. Low ridership feeder line. Serves the rural-urban fringe of South-West Delhi.",
     stations: [
       { name: "Dwarka" },
       { name: "Nangli" },
@@ -337,6 +367,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "185 70% 45%",
     colorHex: "#22a3ad",
     coaches: 6,
+    rushLevel: 2,
+    rating: 3.4,
+    description: "Greater Noida's own metro connecting Noida Sector 51 to Depot. Low passenger count as it serves developing areas. Operated independently by NMRC, not connected to main DMRC network.",
     stations: [
       { name: "Noida Sector 51" },
       { name: "Noida Sector 50" },
@@ -363,6 +396,6 @@ export const METRO_LINES: MetroLine[] = [
   },
 ];
 
-export const CAPACITY_PER_COACH: Record<6 | 8, number> = { 6: 35, 8: 50 };
+export const CAPACITY_PER_COACH: Record<6 | 8, number> = { 6: 50, 8: 75 };
 
 export const getLineById = (id: string) => METRO_LINES.find((l) => l.id === id);

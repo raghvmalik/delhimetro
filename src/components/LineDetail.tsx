@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MetroLine, CAPACITY_PER_COACH, METRO_LINES } from "@/data/delhiMetro";
-import { ArrowLeft, MapPin, Train, ChevronRight } from "lucide-react";
+import { ArrowLeft, MapPin, Train, ChevronRight, Star, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TrainSensor from "@/components/TrainSensor";
 
@@ -53,6 +53,22 @@ const LineDetail = ({ line, onBack }: Props) => {
           <div className="text-[10px] font-mono text-muted-foreground tracking-widest mb-1">TOTAL CAP</div>
           <div className="font-mono text-lg font-bold text-foreground">{line.coaches * capacity}</div>
         </div>
+      </div>
+
+      {/* Description & Rating */}
+      <div className="border rounded-lg p-4 mb-6" style={{ borderColor: line.colorHex + "33", backgroundColor: line.colorHex + "08" }}>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-0.5">
+            {Array.from({ length: 5 }, (_, i) => (
+              <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(line.rating) ? "fill-warning text-warning" : "text-muted-foreground/30"}`} />
+            ))}
+          </div>
+          <span className="text-xs font-mono text-muted-foreground">{line.rating}/5</span>
+          <span className="text-xs font-mono text-muted-foreground mx-2">•</span>
+          <Activity className="w-3 h-3 text-muted-foreground" />
+          <span className="text-xs font-mono text-muted-foreground">Rush: {line.rushLevel}/10</span>
+        </div>
+        <p className="text-xs font-mono text-muted-foreground leading-relaxed">{line.description}</p>
       </div>
 
       <p className="text-sm font-mono text-muted-foreground mb-4">
