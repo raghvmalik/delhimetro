@@ -367,6 +367,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "185 70% 45%",
     colorHex: "#22a3ad",
     coaches: 6,
+    rushLevel: 2,
+    rating: 3.4,
+    description: "Greater Noida's own metro connecting Noida Sector 51 to Depot. Low passenger count as it serves developing areas. Operated independently by NMRC, not connected to main DMRC network.",
     stations: [
       { name: "Noida Sector 51" },
       { name: "Noida Sector 50" },
