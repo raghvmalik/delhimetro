@@ -302,6 +302,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "340 70% 60%",
     colorHex: "#d94080",
     coaches: 8,
+    rushLevel: 3,
+    rating: 4.2,
+    description: "Longest ring line from Majlis Park to Shiv Vihar. Despite many stations, carries relatively low passenger load. Well-connected with interchanges but yet to reach full ridership potential.",
     stations: [
       { name: "Majlis Park" },
       { name: "Azadpur", interchange: ["yellow"] },
