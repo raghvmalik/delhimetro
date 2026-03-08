@@ -208,6 +208,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "270 60% 50%",
     colorHex: "#8033cc",
     coaches: 8,
+    rushLevel: 7,
+    rating: 4.0,
+    description: "Kashmere Gate to Raja Nahar Singh (Ballabhgarh). Important corridor for South Delhi commuters. Moderately crowded with good interchange connectivity at Kashmere Gate and Central Secretariat.",
     stations: [
       { name: "Kashmere Gate", interchange: ["red", "yellow"] },
       { name: "Lal Quila" },
