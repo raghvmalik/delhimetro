@@ -21,7 +21,7 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <Train className="w-8 h-8 text-primary" />
             <h1 className="font-display text-2xl md:text-3xl font-black tracking-wider text-foreground">
-              DELHI METRO SENSOR
+              DELHI METRO
             </h1>
           </div>
           <Button
