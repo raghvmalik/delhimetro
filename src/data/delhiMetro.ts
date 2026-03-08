@@ -396,6 +396,6 @@ export const METRO_LINES: MetroLine[] = [
   },
 ];
 
-export const CAPACITY_PER_COACH: Record<6 | 8, number> = { 6: 35, 8: 50 };
+export const CAPACITY_PER_COACH: Record<6 | 8, number> = { 6: 50, 8: 75 };
 
 export const getLineById = (id: string) => METRO_LINES.find((l) => l.id === id);
