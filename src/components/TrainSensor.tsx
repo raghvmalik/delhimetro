@@ -85,7 +85,7 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
         return current;
       });
     }, 100);
-  }, [coachCount, capacity]);
+  }, [coachCount, capacity, line.rushLevel, interchangeMultiplier]);
 
   const addPassenger = useCallback(
     (i: number) => {
