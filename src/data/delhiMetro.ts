@@ -10,6 +10,9 @@ export interface MetroLine {
   colorHex: string; // for direct use
   coaches: 6 | 8;
   stations: Station[];
+  rushLevel: number; // 1-10 scale, affects random boarding volume
+  rating: number; // 1-5 star rating
+  description: string; // line description
 }
 
 export const METRO_LINES: MetroLine[] = [
