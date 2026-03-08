@@ -253,6 +253,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "25 85% 55%",
     colorHex: "#e87820",
     coaches: 6,
+    rushLevel: 2,
+    rating: 4.6,
+    description: "Premium express service from New Delhi to Dwarka Sector 21 via IGI Airport. Low ridership but highest comfort — cushioned seats, baggage racks, and airport check-in facilities. India's fastest metro.",
     stations: [
       { name: "New Delhi", interchange: ["yellow"] },
       { name: "Shivaji Stadium" },
