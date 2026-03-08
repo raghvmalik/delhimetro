@@ -125,7 +125,7 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
         />
         <div>
           <h2 className="font-display text-lg font-bold tracking-wider text-foreground">{stationName.toUpperCase()}</h2>
-          <p className="text-xs font-mono text-muted-foreground">{line.name} • Train Sensor</p>
+          <p className="text-xs font-mono text-muted-foreground">{line.name} • Train Sensor • Rush Level {line.rushLevel}/10{isInterchange ? " • ⬥ Interchange" : ""}</p>
         </div>
       </div>
 
