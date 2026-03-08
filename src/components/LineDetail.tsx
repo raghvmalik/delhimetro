@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MetroLine, CAPACITY_PER_COACH, METRO_LINES } from "@/data/delhiMetro";
-import { ArrowLeft, MapPin, Train, ChevronRight } from "lucide-react";
+import { ArrowLeft, MapPin, Train, ChevronRight, Star, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TrainSensor from "@/components/TrainSensor";
 
