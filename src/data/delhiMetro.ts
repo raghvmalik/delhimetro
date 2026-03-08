@@ -22,6 +22,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "0 70% 50%",
     colorHex: "#cc3333",
     coaches: 6,
+    rushLevel: 5,
+    rating: 3.2,
+    description: "One of the oldest lines connecting Rithala to Shaheed Sthal (New Bus Adda). Carries average ridership through residential and commercial areas of North & East Delhi.",
     stations: [
       { name: "Shaheed Sthal" },
       { name: "Hindon River" },
