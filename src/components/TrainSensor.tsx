@@ -161,7 +161,6 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
         <Button size="sm" onClick={randomBoard} className="font-mono text-xs">
           <Shuffle className="w-3 h-3 mr-1" /> RANDOM BOARD ({Math.floor(line.rushLevel * 1.5 * interchangeMultiplier)}-{Math.floor(line.rushLevel * 4 * interchangeMultiplier)} pax)
         </Button>
-        </Button>
         <Button size="sm" variant="outline" onClick={() => setPassengers(Array(coachCount).fill(0))} className="font-mono text-xs">
           <RotateCcw className="w-3 h-3 mr-1" /> RESET ALL
         </Button>
