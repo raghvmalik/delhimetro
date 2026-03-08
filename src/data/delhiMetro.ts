@@ -174,6 +174,9 @@ export const METRO_LINES: MetroLine[] = [
     color: "140 65% 40%",
     colorHex: "#238c3e",
     coaches: 6,
+    rushLevel: 8,
+    rating: 3.5,
+    description: "Connects Kirti Nagar to Brigadier Hoshiyar Singh (Bahadurgarh). High ridership from industrial and residential areas of West Delhi. Gets very crowded during peak hours like the Blue Line.",
     stations: [
       { name: "Kirti Nagar", interchange: ["blue"] },
       { name: "Satguru Ram Singh Marg" },
