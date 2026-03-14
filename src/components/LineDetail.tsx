@@ -40,18 +40,21 @@ const LineDetail = ({ line, onBack, cardBalance, onDeductFare }: Props) => {
         boardingStation={journeyStation}
         paymentType={paymentType}
         cardBalance={cardBalance}
-        onComplete={(to, fare, stationsTraveled) => {
+        onComplete={(to, fare, stationsTraveled, segments) => {
           onDeductFare({
-            lineId: line.id,
-            lineName: line.name,
+            lineId: segments.length > 0 ? segments[segments.length - 1].lineId : line.id,
+            lineName: segments.map((s) => s.lineName).join(" → "),
             from: journeyStation,
             to,
             fare,
             stationsTraveled,
             type: paymentType,
           });
+          const segmentInfo = segments.length > 1
+            ? ` • ${segments.length} lines`
+            : "";
           toast.success(`Journey complete! ${journeyStation} → ${to}`, {
-            description: `₹${fare} ${paymentType === "card" ? "deducted from Metro Card" : "token used"} • ${stationsTraveled} stations`,
+            description: `₹${fare} ${paymentType === "card" ? "deducted from Metro Card" : "token used"} • ${stationsTraveled} stations${segmentInfo}`,
             duration: 5000,
           });
           setMode("stations");
