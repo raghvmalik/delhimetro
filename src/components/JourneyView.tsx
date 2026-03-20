@@ -322,7 +322,15 @@ const JourneyView = ({ line: initialLine, boardingStation, paymentType, cardBala
         </div>
       )}
 
-      {/* Train animation / route view */}
+      {/* Animated train track */}
+      <TrainAnimation
+        line={currentLine}
+        currentStationIndex={currentStationIndex}
+        isMoving={isMoving}
+        direction={direction}
+      />
+
+      {/* Station list */}
       <div ref={scrollRef} className="relative max-h-[50vh] overflow-y-auto rounded-lg border border-border bg-card p-4">
         <div className="absolute left-[23px] top-4 bottom-4 w-0.5" style={{ backgroundColor: currentLine.colorHex + "44" }} />
         <div className="space-y-0">
