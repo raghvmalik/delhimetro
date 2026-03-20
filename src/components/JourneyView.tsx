@@ -4,6 +4,7 @@ import { calculateFare } from "@/hooks/useMetroCard";
 import { ArrowLeft, Train, IndianRupee, CreditCard, ChevronDown, AlertCircle, ArrowRightLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import TrainAnimation from "@/components/TrainAnimation";
 
 interface JourneySegment {
   lineId: string;
