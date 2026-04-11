@@ -59,7 +59,7 @@ const MetroDashboard = ({ onSelectLine }: Props) => {
             {/* Color strip */}
             <div className="flex items-center gap-3 mb-2">
               <div
-                className="w-4 h-4 rounded-full shrink-0 ring-2 ring-offset-2 ring-offset-card"
+                className="w-4 h-4 rounded-full shrink-0"
                 style={{ backgroundColor: line.colorHex, boxShadow: `0 0 10px ${line.colorHex}55` }}
               />
               <h3 className="font-display text-sm font-bold tracking-wider text-foreground">
