@@ -3,7 +3,7 @@ import { MetroLine, CAPACITY_PER_COACH, METRO_LINES } from "@/data/delhiMetro";
 import { ArrowLeft, MapPin, Train, ChevronRight, Star, Activity, CreditCard, Ticket, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TrainSensor from "@/components/TrainSensor";
-import JourneyView from "@/components/JourneyView";
+import MetroGameView from "@/components/MetroGameView";
 import { calculateFare } from "@/hooks/useMetroCard";
 import { toast } from "sonner";
 
