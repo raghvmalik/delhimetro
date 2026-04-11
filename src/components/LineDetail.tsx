@@ -35,7 +35,7 @@ const LineDetail = ({ line, onBack, cardBalance, onDeductFare }: Props) => {
 
   if (mode === "journey" && journeyStation) {
     return (
-      <JourneyView
+      <MetroGameView
         line={line}
         boardingStation={journeyStation}
         paymentType={paymentType}
