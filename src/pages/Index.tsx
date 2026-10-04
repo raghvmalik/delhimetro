@@ -6,6 +6,7 @@ import MetroDashboard from "@/components/MetroDashboard";
 import LineDetail from "@/components/LineDetail";
 import MetroCardView from "@/components/MetroCardView";
 import { Button } from "@/components/ui/button";
+import VirtualClock from "@/components/VirtualClock";
 import StationSearch from "@/components/StationSearch";
 
 const Index = () => {
@@ -27,6 +28,8 @@ const Index = () => {
               DELHI METRO
             </h1>
           </div>
+          <div className="flex items-center gap-2">
+          <VirtualClock />
           <Button
             variant="outline"
             size="sm"
@@ -36,6 +39,7 @@ const Index = () => {
             <CreditCard className="w-4 h-4" />
             ₹{card.balance}
           </Button>
+          </div>
         </div>
         <p className="text-muted-foreground font-mono text-sm mb-4">
           Real-time passenger load monitoring & automatic door control system
