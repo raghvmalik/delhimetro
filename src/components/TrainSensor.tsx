@@ -25,7 +25,21 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
   // Check if current station is an interchange
   const currentStation = line.stations.find((s) => s.name === stationName);
   const isInterchange = currentStation?.interchange && currentStation.interchange.length > 0;
-  const interchangeMultiplier = isInterchange ? 1.5 + (currentStation!.interchange!.length * 0.3) : 1;
+  const stationIdx = line.stations.findIndex((s) => s.name === stationName);
+  const isTerminal = stationIdx === 0 || stationIdx === line.stations.length - 1;
+  const n = stationName.toLowerCase();
+  const HOTSPOTS: [string, number][] = [
+    ["rajiv chowk", 2.6], ["kashmere gate", 2.3], ["new delhi", 2.2], ["hauz khas", 2.1],
+    ["dilli haat", 2.0], ["ina", 2.0], ["central secretariat", 2.0], ["mandi house", 1.9],
+    ["chandni chowk", 1.9], ["kirti nagar", 1.8], ["rajouri garden", 1.8], ["botanical garden", 1.8],
+    ["yamuna bank", 1.8], ["huda city centre", 1.8], ["millennium city centre", 1.8], ["noida city centre", 1.8],
+    ["anand vihar", 1.9], ["lajpat nagar", 1.8], ["kalkaji", 1.7], ["janakpuri west", 1.8],
+    ["welcome", 1.7], ["azadpur", 1.7], ["shaheed sthal", 1.8], ["rithala", 1.8],
+  ];
+  const hotspot = HOTSPOTS.find(([k]) => n.includes(k))?.[1] ?? 1;
+  let interchangeMultiplier = isInterchange ? 1.5 + (currentStation!.interchange!.length * 0.3) : 1;
+  interchangeMultiplier = Math.max(interchangeMultiplier, hotspot);
+  if (isTerminal) interchangeMultiplier *= line.id === "red" ? 1.9 : 1.3;
 
   const randomBoard = useCallback(() => {
     // Rush-level based boarding: rushLevel 1-10 maps to passenger ranges
