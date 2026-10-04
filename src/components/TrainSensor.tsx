@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { MetroLine, CAPACITY_PER_COACH } from "@/data/delhiMetro";
+import { getVirtualMinutes, timeRushFactor, formatVirtualTime, timeRushLabel } from "@/data/delhiMetro";
 import { ArrowLeft, RotateCcw, Users, DoorOpen, DoorClosed, AlertTriangle, Info, Armchair, Hand, Shuffle, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -19,7 +20,13 @@ interface Warning {
 const TrainSensor = ({ line, stationName, onBack }: Props) => {
   const capacity = CAPACITY_PER_COACH[line.coaches];
   const coachCount = line.coaches;
-  const [passengers, setPassengers] = useState<number[]>(Array(coachCount).fill(0));
+  const [vMins] = useState(() => getVirtualMinutes());
+  const timeFactor = timeRushFactor(vMins);
+  const [passengers, setPassengers] = useState<number[]>(() => {
+    const base = timeFactor * (0.3 + line.rushLevel * 0.07); // fraction of capacity
+    return Array.from({ length: coachCount }, () =>
+      Math.min(capacity, Math.max(0, Math.round(capacity * base * (0.7 + Math.random() * 0.6)))));
+  });
   const [warnings, setWarnings] = useState<Warning[]>([]);
 
   // Check if current station is an interchange
@@ -40,6 +47,7 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
   let interchangeMultiplier = isInterchange ? 1.5 + (currentStation!.interchange!.length * 0.3) : 1;
   interchangeMultiplier = Math.max(interchangeMultiplier, hotspot);
   if (isTerminal) interchangeMultiplier *= line.id === "red" ? 1.9 : 1.3;
+  interchangeMultiplier *= 0.25 + timeFactor;
 
   const randomBoard = useCallback(() => {
     // Rush-level based boarding: rushLevel 1-10 maps to passenger ranges
@@ -139,7 +147,7 @@ const TrainSensor = ({ line, stationName, onBack }: Props) => {
         />
         <div>
           <h2 className="font-display text-lg font-bold tracking-wider text-foreground">{stationName.toUpperCase()}</h2>
-          <p className="text-xs font-mono text-muted-foreground">{line.name} • Train Sensor • Rush Level {line.rushLevel}/10{isInterchange ? " • ⬥ Interchange" : ""}</p>
+          <p className="text-xs font-mono text-muted-foreground">{line.name} • Train Sensor • Rush Level {line.rushLevel}/10 • 🕒 {formatVirtualTime(vMins)} ({timeRushLabel(timeFactor)}){isInterchange ? " • ⬥ Interchange" : ""}</p>
         </div>
       </div>
 

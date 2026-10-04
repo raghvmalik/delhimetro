@@ -100,7 +100,7 @@ export const METRO_LINES: MetroLine[] = [
       { name: "Ghitorni" },
       { name: "Arjan Garh" },
       { name: "Guru Dronacharya" },
-      { name: "Sikanderpur" },
+      { name: "Sikanderpur", interchange: ["rapid"] },
       { name: "MG Road" },
       { name: "IFFCO Chowk" },
       { name: "HUDA City Centre" },
@@ -153,7 +153,7 @@ export const METRO_LINES: MetroLine[] = [
       { name: "Akshardham" },
       { name: "Mayur Vihar Phase-1" },
       { name: "Mayur Vihar Extension" },
-      { name: "New Ashok Nagar" },
+      { name: "New Ashok Nagar", interchange: ["namo"] },
       { name: "Noida Sector 15" },
       { name: "Noida Sector 16" },
       { name: "Noida Sector 18" },
@@ -233,7 +233,7 @@ export const METRO_LINES: MetroLine[] = [
       { name: "Jasola Apollo" },
       { name: "Sarita Vihar" },
       { name: "Mohan Estate" },
-      { name: "Tughlakabad" },
+      { name: "Tughlakabad", interchange: ["golden"] },
       { name: "Badarpur Border" },
       { name: "Sarai" },
       { name: "NHPC Chowk" },
@@ -260,7 +260,7 @@ export const METRO_LINES: MetroLine[] = [
       { name: "New Delhi", interchange: ["yellow"] },
       { name: "Shivaji Stadium" },
       { name: "Dhaula Kuan" },
-      { name: "Delhi Aerocity" },
+      { name: "Delhi Aerocity", interchange: ["golden"] },
       { name: "IGI Airport" },
       { name: "Dwarka Sector 21", interchange: ["blue"] },
     ],
@@ -333,7 +333,7 @@ export const METRO_LINES: MetroLine[] = [
       { name: "East Vinod Nagar-Mayur Vihar-II" },
       { name: "Mandawali-West Vinod Nagar" },
       { name: "IP Extension" },
-      { name: "Anand Vihar", interchange: ["blue"] },
+      { name: "Anand Vihar", interchange: ["blue", "namo"] },
       { name: "Karkarduma" },
       { name: "Karkarduma Court" },
       { name: "Krishna Nagar" },
@@ -394,8 +394,112 @@ export const METRO_LINES: MetroLine[] = [
       { name: "Depot" },
     ],
   },
+  {
+    id: "rapid",
+    name: "Rapid Metro",
+    color: "200 80% 45%",
+    colorHex: "#1a8fd1",
+    coaches: 6,
+    rushLevel: 4,
+    rating: 3.6,
+    description: "Gurugram's Rapid Metro loop serving Cyber City and Golf Course Road. Interchange with Yellow Line at Sikanderpur. Busy with corporate commuters on weekdays.",
+    stations: [
+      { name: "Sikanderpur", interchange: ["yellow"] },
+      { name: "Phase 2" },
+      { name: "Belvedere Towers" },
+      { name: "Cyber City" },
+      { name: "Moulsari Avenue" },
+      { name: "Phase 3" },
+      { name: "Phase 1" },
+      { name: "Sector 42-43" },
+      { name: "Sector 53-54" },
+      { name: "Sector 54 Chowk" },
+      { name: "Sector 55-56" },
+    ],
+  },
+  {
+    id: "golden",
+    name: "Golden Line",
+    color: "45 80% 50%",
+    colorHex: "#d4a017",
+    coaches: 6,
+    rushLevel: 3,
+    rating: 3.7,
+    description: "Phase 4 corridor linking Tughlakabad (Violet) to Delhi Aerocity (Airport Express) via Saket and Mehrauli. Moderate ridership, growing quickly.",
+    stations: [
+      { name: "Tughlakabad", interchange: ["violet"] },
+      { name: "Tughlakabad Railway Colony" },
+      { name: "Anandmai Marg" },
+      { name: "Sangam Vihar - Tigri" },
+      { name: "Khanpur" },
+      { name: "Ambedkar Nagar" },
+      { name: "Saket G Block" },
+      { name: "Saket District Centre" },
+      { name: "Chhatarpur Mandir" },
+      { name: "IGNOU" },
+      { name: "Andheria Mor" },
+      { name: "Kishangarh" },
+      { name: "Vasant Kunj Sector A" },
+      { name: "Mahipalpur" },
+      { name: "Delhi Aerocity", interchange: ["orange"] },
+    ],
+  },
+  {
+    id: "namo",
+    name: "Namo Bharat (RRTS)",
+    color: "350 60% 55%",
+    colorHex: "#d6455d",
+    coaches: 6,
+    rushLevel: 4,
+    rating: 4.6,
+    description: "India's first semi-high-speed regional rail (160 km/h) connecting Sarai Kale Khan to Meerut. Premium, clean and comfortable; crowded at Delhi ends during peak hours.",
+    stations: [
+      { name: "Sarai Kale Khan" },
+      { name: "New Ashok Nagar", interchange: ["blue"] },
+      { name: "Anand Vihar", interchange: ["blue", "pink"] },
+      { name: "Sahibabad" },
+      { name: "Ghaziabad" },
+      { name: "Guldhar" },
+      { name: "Duhai" },
+      { name: "Duhai Depot" },
+      { name: "Muradnagar" },
+      { name: "Modinagar South" },
+      { name: "Modinagar North" },
+      { name: "Meerut South" },
+    ],
+  },
 ];
 
 export const CAPACITY_PER_COACH: Record<6 | 8, number> = { 6: 50, 8: 75 };
 
 export const getLineById = (id: string) => METRO_LINES.find((l) => l.id === id);
+
+/** Virtual clock: 10 real minutes = 1 virtual hour (6x speed). */
+export const VIRTUAL_SPEED = 6;
+const CLOCK_KEY = "dm-virtual-clock-start";
+export const getVirtualMinutes = (): number => {
+  let start = Number(localStorage.getItem(CLOCK_KEY));
+  if (!start) {
+    // begin at 7:00 AM virtual time
+    start = Date.now() - (7 * 60 * 60 * 1000) / VIRTUAL_SPEED;
+    localStorage.setItem(CLOCK_KEY, String(start));
+  }
+  const mins = ((Date.now() - start) * VIRTUAL_SPEED) / 60000;
+  return mins % (24 * 60);
+};
+export const formatVirtualTime = (mins: number) => {
+  const h = Math.floor(mins / 60), m = Math.floor(mins % 60);
+  const ap = h < 12 ? "AM" : "PM";
+  return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${ap}`;
+};
+/** Crowd factor 0.05 (midnight) .. 1 (peak) by virtual hour. */
+export const timeRushFactor = (mins: number): number => {
+  const h = mins / 60;
+  const pts: [number, number][] = [[0,0.05],[4,0.04],[6,0.3],[8,0.8],[9,1],[10,0.8],[12,0.5],[15,0.45],[17,0.75],[18,0.85],[20,1],[22,0.9],[23,0.3],[24,0.05]];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [h1, v1] = pts[i], [h2, v2] = pts[i + 1];
+    if (h >= h1 && h <= h2) return v1 + ((h - h1) / (h2 - h1)) * (v2 - v1);
+  }
+  return 0.05;
+};
+export const timeRushLabel = (f: number) => f >= 0.85 ? "PEAK" : f >= 0.6 ? "BUSY" : f >= 0.3 ? "MODERATE" : "QUIET";
