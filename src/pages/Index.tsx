@@ -1,46 +1,68 @@
 import { useState } from "react";
+import { Train, CreditCard } from "lucide-react";
 import { getLineById } from "@/data/delhiMetro";
 import { useMetroCard } from "@/hooks/useMetroCard";
-import GameIntro from "@/components/GameIntro";
-import GameHUD from "@/components/GameHUD";
 import MetroDashboard from "@/components/MetroDashboard";
 import LineDetail from "@/components/LineDetail";
 import MetroCardView from "@/components/MetroCardView";
-
-type GameState = "intro" | "menu" | "line" | "card";
+import { Button } from "@/components/ui/button";
+import StationSearch from "@/components/StationSearch";
 
 const Index = () => {
-  const [gameState, setGameState] = useState<GameState>("intro");
   const [selectedLineId, setSelectedLineId] = useState<string | null>(null);
+  const [showCard, setShowCard] = useState(false);
+  const [highlight, setHighlight] = useState<string | null>(null);
+  const [searchKey, setSearchKey] = useState(0);
   const selectedLine = selectedLineId ? getLineById(selectedLineId) : null;
   const { card, topUp, deductFare } = useMetroCard();
 
-  if (gameState === "intro") {
-    return <GameIntro onStart={() => setGameState("menu")} />;
-  }
-
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Game HUD */}
-        <GameHUD
-          card={card}
-          onCardClick={() => setGameState(gameState === "card" ? "menu" : "card")}
-          onTitleClick={() => { setGameState("menu"); setSelectedLineId(null); }}
+        {/* Header */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <Train className="w-8 h-8 text-primary" />
+            <h1 className="font-display text-2xl md:text-3xl font-black tracking-wider text-foreground">
+              DELHI METRO
+            </h1>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="font-mono text-xs gap-2"
+            onClick={() => setShowCard(!showCard)}
+          >
+            <CreditCard className="w-4 h-4" />
+            ₹{card.balance}
+          </Button>
+        </div>
+        <p className="text-muted-foreground font-mono text-sm mb-4">
+          Real-time passenger load monitoring & automatic door control system
+        </p>
+
+        <StationSearch
+          onSelect={(lineId, station) => {
+            setShowCard(false);
+            setSelectedLineId(lineId);
+            setHighlight(station);
+            setSearchKey((k) => k + 1);
+          }}
         />
 
-        {/* Content */}
-        {gameState === "card" ? (
-          <MetroCardView card={card} onTopUp={topUp} onClose={() => setGameState(selectedLineId ? "line" : "menu")} />
-        ) : gameState === "line" && selectedLine ? (
+        {showCard ? (
+          <MetroCardView card={card} onTopUp={topUp} onClose={() => setShowCard(false)} />
+        ) : selectedLine ? (
           <LineDetail
+            key={selectedLine.id + searchKey}
             line={selectedLine}
-            onBack={() => { setGameState("menu"); setSelectedLineId(null); }}
+            highlightStation={highlight}
+            onBack={() => { setSelectedLineId(null); setHighlight(null); }}
             cardBalance={card.balance}
             onDeductFare={(trip) => deductFare(trip)}
           />
         ) : (
-          <MetroDashboard onSelectLine={(id) => { setSelectedLineId(id); setGameState("line"); }} />
+          <MetroDashboard onSelectLine={setSelectedLineId} />
         )}
       </div>
     </div>
