@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MetroLine, CAPACITY_PER_COACH, METRO_LINES } from "@/data/delhiMetro";
 import { ArrowLeft, MapPin, Train, ChevronRight, Star, Activity, CreditCard, Ticket, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,20 @@ interface Props {
   onBack: () => void;
   cardBalance: number;
   onDeductFare: (trip: { lineId: string; lineName: string; from: string; to: string; fare: number; stationsTraveled: number; type: "card" | "token" }) => void;
+  highlightStation?: string | null;
 }
 
 type Mode = "stations" | "sensor" | "journey-select" | "journey";
 
-const LineDetail = ({ line, onBack, cardBalance, onDeductFare }: Props) => {
+const LineDetail = ({ line, onBack, cardBalance, onDeductFare, highlightStation }: Props) => {
+  useEffect(() => {
+    if (!highlightStation) return;
+    const t = setTimeout(() => {
+      document.querySelector(`[data-station="${CSS.escape(highlightStation)}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+    return () => clearTimeout(t);
+  }, [highlightStation]);
+  const hl = (name: string) => name === highlightStation ? " ring-2 ring-primary bg-primary/10" : "";
   const [mode, setMode] = useState<Mode>("stations");
   const [selectedStation, setSelectedStation] = useState<string | null>(null);
   const [journeyStation, setJourneyStation] = useState<string | null>(null);
@@ -125,7 +134,7 @@ const LineDetail = ({ line, onBack, cardBalance, onDeductFare }: Props) => {
                     setJourneyStation(station.name);
                     setMode("journey");
                   }}
-                  className="relative flex items-center gap-4 w-full text-left py-2 px-2 rounded-lg group hover:bg-secondary/50 transition-colors"
+                  className={`relative flex items-center gap-4 w-full text-left py-2 px-2 rounded-lg group hover:bg-secondary/50 transition-colors${hl(station.name)}`}
                 >
                   <div
                     className={`relative z-10 shrink-0 rounded-full border-2 ${isTerminal ? "w-5 h-5" : "w-3 h-3"}`}
@@ -216,8 +225,9 @@ const LineDetail = ({ line, onBack, cardBalance, onDeductFare }: Props) => {
             return (
               <button
                 key={station.name}
+                data-station={station.name}
                 onClick={() => { setSelectedStation(station.name); setMode("sensor"); }}
-                className="relative flex items-center gap-4 w-full text-left py-2 px-2 rounded-lg group hover:bg-secondary/50 transition-colors"
+                className={`relative flex items-center gap-4 w-full text-left py-2 px-2 rounded-lg group hover:bg-secondary/50 transition-colors${hl(station.name)}`}
               >
                 <div
                   className={`relative z-10 shrink-0 rounded-full border-2 ${isTerminal ? "w-5 h-5" : "w-3 h-3"}`}

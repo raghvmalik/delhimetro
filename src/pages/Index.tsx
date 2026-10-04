@@ -6,10 +6,13 @@ import MetroDashboard from "@/components/MetroDashboard";
 import LineDetail from "@/components/LineDetail";
 import MetroCardView from "@/components/MetroCardView";
 import { Button } from "@/components/ui/button";
+import StationSearch from "@/components/StationSearch";
 
 const Index = () => {
   const [selectedLineId, setSelectedLineId] = useState<string | null>(null);
   const [showCard, setShowCard] = useState(false);
+  const [highlight, setHighlight] = useState<string | null>(null);
+  const [searchKey, setSearchKey] = useState(0);
   const selectedLine = selectedLineId ? getLineById(selectedLineId) : null;
   const { card, topUp, deductFare } = useMetroCard();
 
@@ -34,16 +37,27 @@ const Index = () => {
             ₹{card.balance}
           </Button>
         </div>
-        <p className="text-muted-foreground font-mono text-sm mb-8">
+        <p className="text-muted-foreground font-mono text-sm mb-4">
           Real-time passenger load monitoring & automatic door control system
         </p>
+
+        <StationSearch
+          onSelect={(lineId, station) => {
+            setShowCard(false);
+            setSelectedLineId(lineId);
+            setHighlight(station);
+            setSearchKey((k) => k + 1);
+          }}
+        />
 
         {showCard ? (
           <MetroCardView card={card} onTopUp={topUp} onClose={() => setShowCard(false)} />
         ) : selectedLine ? (
           <LineDetail
+            key={selectedLine.id + searchKey}
             line={selectedLine}
-            onBack={() => setSelectedLineId(null)}
+            highlightStation={highlight}
+            onBack={() => { setSelectedLineId(null); setHighlight(null); }}
             cardBalance={card.balance}
             onDeductFare={(trip) => deductFare(trip)}
           />
